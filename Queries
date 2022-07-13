@@ -1,0 +1,95 @@
+#Can search for treks as per different criteria (Difficulty, Location, Time of Year)
+
+#Select treks which don't require permit and difficulty >5 and print 5 such with least cost
+
+SELECT 
+    trek_location, base_cost
+FROM
+    trek
+WHERE
+    permits_required = 0
+        AND trek_difficulty_rating > 5
+ORDER BY base_cost asc 
+limit 5;
+
+
+#Can view current and past bookings.
+SELECT 
+    *
+FROM
+    booking
+WHERE
+    booking.email = 'AdennDale61@gmail.com'
+
+
+#Can see top 5 highest rated treks.
+SELECT 
+    trek.trek_name, trek.base_cost, trek_rating
+FROM
+    trek,
+    reviews
+WHERE
+    trek.trek_id = reviews.trek_id
+ORDER BY reviews.trek_rating DESC
+LIMIT 5;
+#Can view registered customer information (Name, Age, Pre Existing Medical Conditions and so on.)
+Select * from Customer_Details;
+Can view and edit trek groups.
+Select * from Trek_Group;
+
+update Trek_Group
+set var1 = #, var2 = # 
+where trek_group_id = #;
+
+#Can view/modify permit statuses for different treks.
+Select * from Permit 
+Where group_id = #
+#Can view/modify incentives for different trek guides.
+Select employee_id , incentives from Agency_Employee;
+
+update Agency_Employee 
+set incentives = 50
+where employee_id = 2;
+
+select * from customer_info as ci
+	inner join booked_for as bf on (bf.customer_id = ci.customer_id)
+	inner join booking as b on (b.email = bf.email and b.booking_id = bf.booking_id)
+	inner join trek_group as tgp on tgp.trek_group_id = b.group_id
+	inner join guide_of as go on go.trek_group_id = tgp.trek_group_id
+	inner join trek_guide as tgd on tgd.employee_id = go.employee_id
+	where tgd.employee_id = 32 and sysdate() between tgp.starts_from and tgp.ends_on;
+#Can view the details of the camping crew assigned to the group.
+select * from camping_crew_member as ccm
+	inner join camping_crew as cc on cc.camping_crew_id = ccm.camping_crew_id
+	inner join trek_group as tgp on tgp.camping_crew_id = cc.camping_crew_id
+	inner join guide_of as go on go.trek_group_id = tgp.trek_group_id
+	inner join trek_guide as tgd on tgd.employee_id = go.employee_id
+	where tgd.employee_id = 32 and sysdate() between tgp.starts_from and tgp.ends_on;
+
+#Can view the details of the transport crew.
+select * from transport_crew_member as tcm
+	inner join transport_crew as tc on tc.transport_crew_id = tcm.transport_crew_id
+	inner join trek_group as tgp on tgp.transport_crew_id = tc.transport_crew_id
+	inner join guide_of as go on go.trek_group_id = tgp.trek_group_id
+	inner join trek_guide as tgd on tgd.employee_id = go.employee_id
+	where tgd.employee_id = 32 and sysdate() between tgp.starts_from and tgp.ends_on;
+
+#Can view/edit their own account details.
+-- VIEW
+
+select ae.*, tgd.* from agency_employee as ae
+	inner join tgd on tgd.employee_id = ae.employee_id
+	where tgd.employee_id = 32;
+
+-- EDIT
+
+update agency_employee
+	SET first_name=’John’
+	WHERE employee_id=9;
+
+#Can see the details of past treks conducted by them.
+select * from trek_group as tgp
+	inner join guide_of as go on go.trek_group_id = tgp.trek_group_id
+	inner join trek_guide as tgd on tgd.employee_id = go.employee_id
+	where tgd.employee_id = 32 and tgp.ends_on < sysdate();
+
